@@ -122,31 +122,6 @@ const ProjectModal = ({ data, onClose }: Props) => {
               {/* ── Coluna direita: Painel com setas ── */}
               <div className="flex-1 relative p-4 flex flex-col min-h-[300px] md:min-h-0">
 
-                {/* Label do painel atual */}
-                {total > 1 && (
-                  <div className="flex items-center justify-between mb-3 flex-shrink-0">
-                    <span className="text-xs font-sora text-brand-light/60">
-                      {current.label}
-                    </span>
-                    {/* Dots */}
-                    <div className="flex gap-2">
-                      {panels.map((_, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setPanelIndex(i)}
-                          className="w-2 h-2 rounded-full transition-all duration-300"
-                          style={{
-                            background: i === panelIndex
-                              ? 'rgba(199,125,255,0.9)'
-                              : 'rgba(199,125,255,0.25)',
-                            transform: i === panelIndex ? 'scale(1.3)' : 'scale(1)',
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* Área da imagem */}
                 <div
                   className="flex-1 rounded-2xl overflow-hidden relative"
@@ -156,6 +131,30 @@ const ProjectModal = ({ data, onClose }: Props) => {
                     minHeight: 0,
                   }}
                 >
+                  {/* Label do painel atual e Dots */}
+                  {total > 1 && (
+                    <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+                      <span className="text-xs font-sora text-brand-light/80 bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/5">
+                        {current.label}
+                      </span>
+                      {/* Dots */}
+                      <div className="flex gap-2 bg-black/40 px-3 py-2 rounded-full backdrop-blur-md border border-white/5 pointer-events-auto">
+                        {panels.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setPanelIndex(i)}
+                            className="w-2 h-2 rounded-full transition-all duration-300"
+                            style={{
+                              background: i === panelIndex
+                                ? 'rgba(199,125,255,0.9)'
+                                : 'rgba(199,125,255,0.25)',
+                              transform: i === panelIndex ? 'scale(1.3)' : 'scale(1)',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={current.key}

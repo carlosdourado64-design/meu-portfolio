@@ -125,7 +125,7 @@ const Hero = () => {
           </span>
           ,{' '}
           <br className="hidden md:block" />
-          Impacta e permanece
+          impacta e permanece
         </motion.h1>
 
         {/* Subtítulo */}
