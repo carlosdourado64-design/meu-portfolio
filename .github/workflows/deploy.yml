@@ -1,0 +1,35 @@
+name: Deploy para Hostinger
+
+on:
+  push:
+    branches:
+      - main # O robô é ativado sempre que houver alteração na branch main
+
+jobs:
+  web-deploy:
+    name: Build e Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pegando o código mais recente
+        uses: actions/checkout@v3
+      
+      - name: Instalando o Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # Versão do Node
+          
+      - name: Instalando dependências (npm install)
+        working-directory: ./app
+        run: npm install
+        
+      - name: Compilando o projeto (npm run build)
+        working-directory: ./app
+        run: npm run build
+        
+      - name: Enviando para a Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./app/dist/ # Pasta com os arquivos finais que será enviada
