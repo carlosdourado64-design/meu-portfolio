@@ -31,5 +31,5 @@ jobs:
         with:
           server: ftp://82.25.73.47
           username: u618563005
-          password: KingPTO27@
+          password: ...
           local-dir: ./app/dist/ # Pasta com os arquivos finais que será enviada
