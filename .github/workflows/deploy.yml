@@ -35,4 +35,4 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          lftp -c "set net:timeout 30; set net:max-retries 3; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; mirror -R --delete ./app/dist/ /home/u618563005/domains/douradostudio.com/public_html/; echo 'Site atualizado com sucesso no caminho absoluto!';"
+          lftp -c "set net:timeout 30; set net:max-retries 3; set cmd:fail-exit yes; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" -p 65002 sftp://\"$FTP_SERVER\"; mirror -R --delete ./app/dist/ /home/u618563005/domains/douradostudio.com/public_html/; echo 'Site atualizado com sucesso via SFTP!';"
