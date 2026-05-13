@@ -38,4 +38,4 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          lftp -c "set cmd:fail-exit yes; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; echo 'Conectado. Verificando estrutura de domínios:'; ls domains/douradostudio.com/; mirror -R -v ./app/dist/ domains/douradostudio.com/public_html/ --ignore-time --parallel=10 --exclude-glob .git*; echo 'Envio concluído para domains/douradostudio.com/public_html/';"
+          lftp -c "set net:timeout 10; set net:max-retries 2; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; echo '--- LOCALIZAÇÃO ATUAL ---'; pwd; ls; echo '--- EXPLORANDO NÍVEL ACIMA ---'; ls ..; echo '--- BUSCANDO PASTA public_html ---'; find . -maxdepth 3 -name \"public_html\";"
