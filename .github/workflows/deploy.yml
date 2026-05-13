@@ -25,14 +25,21 @@ jobs:
       - name: Compilando o projeto (npm run build)
         working-directory: ./app
         run: npm run build
-        
-      - name: Instalando pacote FTP
-        run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: 🚀 Deploy Final via FTP (Lftp)
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      - name: 🚀 Configurando SFTP (Caminho Absoluto)
         run: |
-          lftp -c "set net:timeout 30; set net:max-retries 3; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; echo '--- ONDE ESTAMOS ---'; pwd; ls -la; echo 'Tentando caminhos...'; cd public_html || cd domains/douradostudio.com/public_html || echo 'Ficando na raiz'; mirror -R --delete ./app/dist/ ./; echo 'Deploy concluido!';"
+          # Limpando o servidor para garantir que não tenha ftp://
+          CLEAN_SERVER=$(echo "${{ secrets.FTP_SERVER }}" | sed -e 's|^ftp://||' -e 's|^ftps://||')
+          echo "SERVER=$CLEAN_SERVER" >> $GITHUB_ENV
+
+      - name: Executando Envio via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ env.SERVER }}
+          port: 65002
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_path: './app/dist/'
+          remote_path: '/home/u618563005/domains/douradostudio.com/public_html/'
+          sftp_only: true
+          delete_remote_files: true
