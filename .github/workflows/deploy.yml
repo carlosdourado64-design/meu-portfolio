@@ -29,10 +29,13 @@ jobs:
       - name: Instalando pacote FTP
         run: sudo apt-get update && sudo apt-get install -y lftp
 
+      - name: Listar arquivos compilados (Debug)
+        run: ls -R ./app/dist/
+
       - name: Enviando para a Hostinger via FTP
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          lftp -c "set cmd:fail-exit yes; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; mirror -R ./app/dist/ public_html/ --ignore-time --parallel=10 --exclude-glob .git*"
+          lftp -c "set cmd:fail-exit yes; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; echo 'Conectado. Diretório atual:'; pwd; echo 'Conteúdo do diretório raiz:'; ls; mirror -R -v ./app/dist/ public_html/ --ignore-time --parallel=10 --exclude-glob .git*; echo 'Conteúdo da public_html após o envio:'; ls public_html/"
