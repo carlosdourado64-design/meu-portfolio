@@ -36,4 +36,4 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           Server-dir: public_hyml/
         run: |
-          lftp -c "set cmd:fail-exit yes; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; mirror -R ./app/dist/ ./ --ignore-time --parallel=10 --exclude-glob .git*"
+          lftp -c "set cmd:fail-exit yes; set ftp:ssl-allow no; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; mirror -R ./app/dist/ public_html/ --ignore-time --parallel=10 --exclude-glob .git*"
