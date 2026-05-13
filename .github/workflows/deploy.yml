@@ -3,7 +3,7 @@ name: Deploy para Hostinger
 on:
   push:
     branches:
-      - main # O robô é ativado sempre que houver alteração na branch main
+      - main
 
 jobs:
   web-deploy:
@@ -16,7 +16,7 @@ jobs:
       - name: Instalando o Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # Versão do Node
+          node-version: '20'
           
       - name: Instalando dependências (npm install)
         working-directory: ./app
@@ -25,21 +25,24 @@ jobs:
       - name: Compilando o projeto (npm run build)
         working-directory: ./app
         run: npm run build
+        
+      - name: Instalando pacote FTP
+        run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: 🚀 Configurando SFTP (Caminho Absoluto)
+      - name: 🔍 Varredura de Pastas e Deploy
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          # Limpando o servidor para garantir que não tenha ftp://
-          CLEAN_SERVER=$(echo "${{ secrets.FTP_SERVER }}" | sed -e 's|^ftp://||' -e 's|^ftps://||')
-          echo "SERVER=$CLEAN_SERVER" >> $GITHUB_ENV
-
-      - name: Executando Envio via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          server: ${{ env.SERVER }}
-          port: 65002
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local_path: './app/dist/'
-          remote_path: '/home/u618563005/domains/douradostudio.com/public_html/'
-          sftp_only: true
-          delete_remote_files: true
+          lftp -c "
+            set net:timeout 30;
+            set ftp:ssl-allow no;
+            open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\";
+            echo '--- LISTANDO TUDO QUE O FTP ENXERGA ---';
+            ls -R;
+            echo '--- TENTANDO ACESSAR O CAMINHO DO SITE ---';
+            cd domains/douradostudio.com/public_html/ || cd douradostudio.com/public_html/ || echo 'Caminho nao encontrado, ficando na raiz';
+            mirror -R --delete ./app/dist/ ./;
+            echo 'Deploy Finalizado!';
+          "
