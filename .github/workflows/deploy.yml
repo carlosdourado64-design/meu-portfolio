@@ -35,4 +35,6 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          lftp -c "set net:timeout 30; set net:max-retries 3; set cmd:fail-exit yes; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" -p 65002 sftp://\"$FTP_SERVER\"; mirror -R --delete ./app/dist/ /home/u618563005/domains/douradostudio.com/public_html/; echo 'Site atualizado com sucesso via SFTP!';"
+          # Limpa o prefixo ftp:// ou ftps:// se existir no secret
+          CLEAN_SERVER=$(echo "$FTP_SERVER" | sed -e 's|^ftp://||' -e 's|^ftps://||')
+          lftp -c "set net:timeout 30; set net:max-retries 3; set sftp:auto-confirm yes; set cmd:fail-exit yes; open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" -p 65002 sftp://$CLEAN_SERVER; mirror -R --delete ./app/dist/ /home/u618563005/domains/douradostudio.com/public_html/; echo 'Site atualizado com sucesso via SFTP!';"
