@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Smartphone } from 'lucide-react';
+import { ArrowRight, Smartphone, Monitor } from 'lucide-react';
 import ProjectModal, { type ProjectModalData } from './ProjectModal';
 
 // ── Dados dos projetos ──────────────────────────────────────────────
@@ -87,6 +87,15 @@ const Projects = () => {
       description: p.modalDescription,
       mainImage: p.modal.mainImage,
       scrollImage: p.modal.scrollImage,
+    });
+  };
+
+  const handleVerLp = () => {
+    setModalData({
+      title: 'iPhone 17 — Landing Page Premium',
+      category: 'Landing pages',
+      description: 'Uma landing page fictícia criada para explorar uma experiência digital premium, com foco em apresentação de produto, animações em scroll e estética tecnológica. O projeto simula o lançamento do iPhone 17, destacando design, movimento e impacto visual em uma navegação moderna e imersiva.',
+      video: '/img/lp-iphone.mp4',
     });
   };
 
@@ -254,6 +263,54 @@ const Projects = () => {
 
             {/* Borda glow no hover */}
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-brand-neon/30 rounded-3xl transition-colors duration-500 pointer-events-none" />
+          </motion.div>
+
+          {/* ── Card Landing Pages — Preview com Vídeo ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="group relative glass-card rounded-3xl overflow-hidden mt-8 border border-brand-light/10 hover:border-brand-neon/30 hover:shadow-[0_10px_40px_rgba(157,78,221,0.2)] transition-all duration-500"
+          >
+            <div className="flex flex-col md:flex-row">
+              {/* Vídeo Preview */}
+              <div className="w-full md:w-[45%] h-64 md:h-auto relative overflow-hidden bg-black/40">
+                <video
+                  src="/img/lp-iphone.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#12002e] via-transparent to-transparent md:bg-gradient-to-r" />
+              </div>
+
+              {/* Conteúdo */}
+              <div className="flex-1 p-6 md:p-10 flex flex-col justify-center">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-brand-primary/20 flex items-center justify-center border border-brand-light/20 group-hover:bg-brand-primary/40 transition-colors">
+                    <Monitor className="text-brand-light w-5 h-5" />
+                  </div>
+                  <h4 className="text-lg md:text-xl font-sora font-semibold group-hover:text-brand-light transition-colors">
+                    Landing pages
+                  </h4>
+                </div>
+                
+                <p className="text-brand-gray/85 font-inter text-sm md:text-base mb-6 leading-relaxed">
+                  Uma landing page fictícia criada para explorar uma experiência digital premium, com foco em apresentação de produto, animações em scroll e estética tecnológica. O projeto simula o lançamento do iPhone 17, destacando design, movimento e impacto visual em uma navegação moderna e imersiva.
+                </p>
+
+                <button
+                  onClick={handleVerLp}
+                  className="flex items-center gap-2 text-brand-neon font-sora font-medium text-xs md:text-sm group/btn hover:text-brand-light transition-colors w-max"
+                >
+                  Ver projeto completo{' '}
+                  <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
           </motion.div>
 
           {/* ── Card Social Media — Carrossel infinito ── */}

@@ -6,7 +6,8 @@ export interface ProjectModalData {
   title: string;
   category: string;
   description: string;
-  mainImage: string;
+  mainImage?: string;
+  video?: string;
   scrollImage?: string;
 }
 
@@ -38,12 +39,16 @@ const ProjectModal = ({ data, onClose }: Props) => {
 
   if (!data) return null;
 
-  const panels = [
-    { key: 'main', src: data.mainImage, label: 'Social Media', scrollable: false },
-    ...(data.scrollImage
-      ? [{ key: 'lp', src: data.scrollImage, label: 'Landing Page', scrollable: true }]
-      : []),
-  ];
+  const panels: any[] = [];
+  if (data.video) {
+    panels.push({ key: 'video', src: data.video, label: 'Vídeo Demonstrativo', type: 'video' });
+  }
+  if (data.mainImage) {
+    panels.push({ key: 'main', src: data.mainImage, label: 'Visual Principal', type: 'image' });
+  }
+  if (data.scrollImage) {
+    panels.push({ key: 'lp', src: data.scrollImage, label: 'Landing Page', type: 'image', scrollable: true });
+  }
 
   const total = panels.length;
   const current = panels[panelIndex];
@@ -114,7 +119,7 @@ const ProjectModal = ({ data, onClose }: Props) => {
 
                 <div className="mt-8 pt-6" style={{ borderTop: '1px solid rgba(199,125,255,0.1)' }}>
                   <p className="text-xs text-brand-gray/50 font-inter">
-                    Material gráfico · Identidade Visual · Eventos
+                    Exploração Visual · UX/UI · Design Premium
                   </p>
                 </div>
               </div>
@@ -122,7 +127,7 @@ const ProjectModal = ({ data, onClose }: Props) => {
               {/* ── Coluna direita: Painel com setas ── */}
               <div className="flex-1 relative p-4 flex flex-col min-h-[300px] md:min-h-0">
 
-                {/* Área da imagem */}
+                {/* Área da imagem/vídeo */}
                 <div
                   className="flex-1 rounded-2xl overflow-hidden relative"
                   style={{
@@ -164,7 +169,14 @@ const ProjectModal = ({ data, onClose }: Props) => {
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.3, ease: 'easeOut' }}
                     >
-                      {current.scrollable ? (
+                      {current.type === 'video' ? (
+                        <video
+                          src={current.src}
+                          controls
+                          autoPlay
+                          className="w-full h-full object-contain"
+                        />
+                      ) : current.scrollable ? (
                         // Painel scrollável verticalmente
                         <div
                           className="w-full h-full overflow-y-auto"
